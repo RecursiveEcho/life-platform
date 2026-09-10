@@ -1,0 +1,18 @@
+services:
+  # 仅编排秒杀链路依赖的 RabbitMQ；MySQL/Redis 可使用本机服务或单独的容器。
+  rabbitmq:
+    image: rabbitmq:3.13-management
+    container_name: life-platform-rabbitmq
+    restart: unless-stopped
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: guest
+      RABBITMQ_DEFAULT_PASS: guest
+    volumes:
+      - rabbitmq-data:/var/lib/rabbitmq
+
+volumes:
+  # 持久化交换机、队列和未消费消息，避免 RabbitMQ 重启后丢失测试数据。
+  rabbitmq-data:

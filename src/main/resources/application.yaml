@@ -1,0 +1,58 @@
+spring:
+  application:
+    name: life-platform
+  # 数据库、Redis 和 RabbitMQ 默认连接本机，也可用环境变量覆盖，便于本地与 Docker 环境切换。
+  datasource:
+    url: ${DB_URL:jdbc:mysql://localhost:3306/life_platform?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  data:
+    redis:
+      host: ${REDIS_HOST:localhost}
+      port: ${REDIS_PORT:6379}
+  rabbitmq:
+    host: ${RABBITMQ_HOST:localhost}
+    port: ${RABBITMQ_PORT:5672}
+    username: ${RABBITMQ_USERNAME:guest}
+    password: ${RABBITMQ_PASSWORD:guest}
+    publisher-confirm-type: correlated
+    publisher-returns: true
+    template:
+      # 开启 mandatory 后，无法路由到队列的消息会触发 returns 回调，而不是静默丢失。
+      mandatory: true
+    listener:
+      simple:
+        # 消费者自己根据事务结果 ack/reject/requeue，避免数据库尚未提交就确认消息。
+        acknowledge-mode: manual
+        prefetch: 1
+jwt:
+  # 必须通过环境变量 JWT_SECRET 注入，切勿把真实密钥写进代码或提交到仓库。
+  secret: ${JWT_SECRET:}
+  expiration-ms: ${JWT_EXPIRATION_MS:86400000}
+
+mybatis-plus:
+  configuration:
+    map-underscore-to-camel-case: true
+
+app:
+  cors:
+    allowed-origin-patterns: ${CORS_ALLOWED_ORIGIN_PATTERNS:http://localhost,http://localhost:*,http://127.0.0.1,http://127.0.0.1:*}
+
+knife4j:
+  enable: true
+  setting:
+    language: zh_cn
+
+cache:
+  ttl:
+    # 详情缓存带随机抖动，列表缓存使用版本号失效；具体参数可按压测结果调整。
+    default-minutes: 10
+    null-marker-minutes: 2
+
+seckill:
+  outbox-delay-ms: 5000
+  outbox-lease-seconds: 60
+  outbox:
+    max-retry-count: 3
+    retry-delay-seconds: 10
