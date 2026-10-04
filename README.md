@@ -64,6 +64,25 @@ set -a && source .env && set +a
 http://localhost:8080/doc.html
 ```
 
+## 联调前端
+
+前端位于 `frontend/`，用于验证登录、店铺、优惠券、秒杀订单和评价链路：
+
+```bash
+cd frontend
+pnpm install
+pnpm dev
+```
+
+默认访问 `http://localhost:5173/`。前端会把 JWT 保存到当前会话，并自动携带
+`Authorization: Bearer <token>` 请求后端。
+
+## V1 验收边界
+
+已完成代码和自动化验证：注册/登录、店铺、优惠券、秒杀下单、订单查询、评价、缓存、Outbox 和消息重试链路；`./mvnw test` 与 `./mvnw package -DskipTests` 已通过。
+
+真实 MySQL、Redis、RabbitMQ 联调、并发抢券和空库部署仍需在依赖服务启动后执行，不能仅以编译或单元测试结果代替。
+
 ## 代码导航
 
 先从控制器进入，再到同名的 Service 实现类。Service 实现里的中文分组就是阅读顺序：

@@ -1,0 +1,12 @@
+# 构建上下文里排除无关/体积大的内容，加速 docker build
+.git
+.idea
+.vscode
+target
+frontend
+node_modules
+sql
+.env
+.env.example
+*.md
+.DS_Store

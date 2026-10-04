@@ -5,12 +5,14 @@ spring:
   datasource:
     url: ${DB_URL:jdbc:mysql://localhost:3306/life_platform?useUnicode=true&characterEncoding=utf-8&serverTimezone=Asia/Shanghai}
     username: ${DB_USERNAME:root}
-    password: ${DB_PASSWORD:}
+    password: ${DB_PASSWORD:1234}
     driver-class-name: com.mysql.cj.jdbc.Driver
   data:
     redis:
       host: ${REDIS_HOST:localhost}
       port: ${REDIS_PORT:6379}
+      # 仅当 Redis 配置了 requirepass 时需要；默认留空表示无需认证。
+      password: ${REDIS_PASSWORD:123456}
   rabbitmq:
     host: ${RABBITMQ_HOST:localhost}
     port: ${RABBITMQ_PORT:5672}
@@ -28,7 +30,7 @@ spring:
         prefetch: 1
 jwt:
   # 必须通过环境变量 JWT_SECRET 注入，切勿把真实密钥写进代码或提交到仓库。
-  secret: ${JWT_SECRET:}
+  secret: MG8vt5m5fopln1VlOytgd+MbyC37YNJcTTjEr34nhZXTrH0VjpEoNxeU5enFoj8T
   expiration-ms: ${JWT_EXPIRATION_MS:86400000}
 
 mybatis-plus:

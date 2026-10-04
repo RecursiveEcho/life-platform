@@ -1,4 +1,20 @@
 services:
+  # 业务应用：通过环境变量注入 JWT 签名密钥，避免启动时报
+  # 「未配置 JWT 密钥（jwt.secret）」
+  app:
+    build: .
+    container_name: life-platform-app
+    restart: unless-stopped
+    depends_on:
+      - rabbitmq
+    ports:
+      - "8080:8080"
+    environment:
+      # JWT 签名密钥：必须是足够随机的字符串（推荐 base64 长度 >= 44）
+      JWT_SECRET: ${JWT_SECRET:?请先设置 JWT_SECRET 环境变量}
+    volumes:
+      - ./.env:/app/.env:ro
+
   # 仅编排秒杀链路依赖的 RabbitMQ；MySQL/Redis 可使用本机服务或单独的容器。
   rabbitmq:
     image: rabbitmq:3.13-management
